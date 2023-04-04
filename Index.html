@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Lector de códigos de barras y QR</title>
+  <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
+</head>
+<body>
+  <h1>Lector de códigos de barras y QR</h1>
+  <div id="interactive" class="viewport"></div>
+  <ul id="result"></ul>
+  <script>
+    // Configuración de QuaggaJS
+    Quagga.init({
+      inputStream : {
+        name : "Live",
+        type : "LiveStream"
+      },
+      decoder : {
+        readers : ["ean_reader", "upc_reader", "code_128_reader", "qr_reader"]
+      }
+    }, function(err) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log("QuaggaJS está listo para ser utilizado.");
+      Quagga.start();
+    });
+
+    // Manejo de resultados
+    Quagga.onDetected(function(result) {
+      console.log("Resultado: ", result);
+      var code = result.codeResult.code;
+      var $node = $('<li><div class="code">' + code + '</div></li>');
+      $('#result').prepend($node);
+    });
+
+    // Detener QuaggaJS al salir de la página
+    window.addEventListener("unload", function() {
+      Quagga.stop();
+    });
+  </script>
+</body>
+</html>
